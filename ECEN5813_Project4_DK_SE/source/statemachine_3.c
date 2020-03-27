@@ -22,10 +22,12 @@ StateMachine3_t sensor_sm3;
 //static const char * sensor_states[] = {"READ_XYZ", "DISPLAY", "SLIDER_POLL", "SENSOR_DISCONNECT", "STATE_EXIT", "STATE_NEXT_SM", "EVENT_NUM_STATES"};
 
 static bool read_state = false;
+static int8_t timeout_counter = 0;
+static int32_t slider_poll_ret = 3;
 
-static int32_t slider_poll_ret = 5;
 extern bool timeout;
 static bool timer_enabled = false;
+static bool poll_value = false;
 
 // event handler for state driven state machine
 int8_t spi_event_handler(void){
@@ -53,31 +55,47 @@ int8_t spi_event_handler(void){
 			timer_enabled = true;
 		}
 		// only enter slider_poll function on systick timer timeout (every 3 seconds)
-		if(timeout){
+		timeout_counter++;
+		Log_string("Counter State: ", SPI_EVENT_HANDLER, LOG_TEST);
+		Log_integer(timeout_counter, EMPTY_NAME, LOG_TEST);
+		while(!timeout){
+			poll_value = false;
 			slider_poll_ret = Slider_poll();
-			timeout = false;
-			// decide next state on slider poll transition event
         	switch(slider_poll_ret){
         	case STATE_LEFT:
         		Log_string("Left transition. Go to other state machine\r\n", SPI_EVENT_HANDLER, LOG_STATUS);
         		sensor_sm3.next_state = STATE_NEXT_SM_SPI;
         		break;
-        	case STATE_TIMEOUT_6:
-        		Log_string("Timeout 6. Go to other state machine\r\n", SPI_EVENT_HANDLER, LOG_STATUS);
-        		sensor_sm3.next_state = STATE_NEXT_SM_SPI;
-        		break;
-        	case STATE_TIMEOUT_15:
-        		Log_string("Timeout 1 to 5. Reading xyz\r\n", SPI_EVENT_HANDLER, LOG_STATUS);
-        		sensor_sm3.next_state = STATE_READ_XYZ_SPI;
-        		break;
         	case STATE_RIGHT:
         		Log_string("Right transition. End program\r\n", SPI_EVENT_HANDLER, LOG_STATUS);
         		sensor_sm3.next_state = STATE_EXIT_SPI;
         		break;
+        	case 3:	// invalid state for slider idle
+        		break;
         	default:
-        		Log_string("ERROR: Invalid state\r\n", SPI_EVENT_HANDLER, LOG_STATUS);
+        		Log_string("ERROR: Invalid poll state\r\n", SPI_EVENT_HANDLER, LOG_STATUS);
         		break;
         	}
+        	if(slider_poll_ret != 3){	// set slider poll value to true if non-idle state detected
+        		poll_value = true;
+        		break;
+        	}
+		}
+		if(timeout){
+			timeout = false;
+		}
+		if(!poll_value){
+			// timer transitions
+			if(timeout_counter <= 5){	// timeouts 1 to 5 transition (also include logic for initial slider poll value
+				sensor_sm3.next_state = STATE_READ_XYZ_SPI;
+			} else if(timeout_counter >= 6){	// timeout 6 transition and reset entrance counter
+				timeout_counter = 0;
+				sensor_sm3.next_state = STATE_NEXT_SM_SPI;
+			} else{	// error
+				LED_off(ALL);
+				Log_string("ERROR: Timer value is out of bounds", SPI_EVENT_HANDLER, LOG_DEBUG);
+		//		PRINTF("%d\r\n", val);
+			}
 		}
 		break;
 	case STATE_SENSOR_DISCONNECT_SPI:

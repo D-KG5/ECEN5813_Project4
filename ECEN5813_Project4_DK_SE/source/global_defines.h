@@ -39,9 +39,10 @@ void Delay(volatile uint32_t number);
 
 // enum for state machines
 typedef enum sm_num_t{
-	STATE_MACHINE_STATE,// no error
-	STATE_MACHINE_TABLE,// failure case
-	STATE_MACHINE_SPI
+	STATE_MACHINE_STATE,
+	STATE_MACHINE_TABLE,
+	STATE_MACHINE_SPI,
+	STATE_MACHINE_NONE
 } sm_num_t;
 
 #endif /* GLOBAL_DEFINES_H_ */

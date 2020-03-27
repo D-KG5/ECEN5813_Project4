@@ -17,9 +17,8 @@
 #include "global_defines.h"
 
 // global variable for Slider_poll function set to invalid state transition value
-SliderState_t slider_transition = 5;
+SliderState_t slider_transition = 3;
 
-static int8_t timeout_counter = 0;
 extern bool timeout;
 
 /**
@@ -62,42 +61,36 @@ uint16_t Slider_scan(void){
  */
 int32_t Slider_poll(void){
 	static uint16_t val = 0;
-	timeout_counter++;
-//	PRINTF("Counter: %d\r\n", timeout_counter);
-
-	val = Slider_scan();
+	slider_transition = 3; // reset state transition value on each entry so that next state machine doesn't use stale state
+	for(int i = 0; i < 10; i++){	// get multiple readings to smooth out anomalies
+		val = Slider_scan();
+		Delay(50000);
+	}
 //	Log_string("Slider value ", SLIDER_POLL, LOG_DEBUG);
 //	PRINTF("%d\r\n", val);
+	Delay(10000);	// wait a bit to allow for states to settle
 	// slider transitions
 	if(val < LEFT_LOWER){	// left slider touch transition
 		LED_off(ALL);
-	} else if((val >= LEFT_LOWER) && (val <= LEFT_HIGHER)){
+	} else if((val > LEFT_LOWER) && (val <= LEFT_HIGHER)){
 		LED_on(RED);
+		Log_string("Slider valueL ", SLIDER_POLL, LOG_TEST);
+		Log_integer(val, EMPTY_NAME, LOG_TEST);
 		slider_transition = STATE_LEFT;
 		return slider_transition;
 	} else if((val >= RIGHT_LOWER) && (val <= RIGHT_HIGHER)){	// right slider touch transition
 		LED_on(BLUE);
+		Log_string("Slider valueR ", SLIDER_POLL, LOG_TEST);
+		Log_integer(val, EMPTY_NAME, LOG_TEST);
 		slider_transition = STATE_RIGHT;
 		return slider_transition;
 	} else{	// error
 		LED_off(ALL);
 		Log_string("ERROR: Slider value is out of bounds: ", SLIDER_POLL, LOG_DEBUG);
-		PRINTF("%d\r\n", val);
-		slider_transition = 5;
+		Log_integer(val, EMPTY_NAME, LOG_TEST);
+		slider_transition = 3;
 	}
-	// timer transitions
-	if(timeout_counter <= 5 || val == 64992){	// timeouts 1 to 5 transition (also include logic for initial slider poll value
-		slider_transition = STATE_TIMEOUT_15;
-	} else if(timeout_counter >= 6){	// timeout 6 transition and reset entrance counter
-		timeout_counter = 0;
-		slider_transition = STATE_TIMEOUT_6;
-	} else{	// error
-		LED_off(ALL);
-		Log_string("ERROR: Timer value is out of bounds", SLIDER_POLL, LOG_DEBUG);
-//		PRINTF("%d\r\n", val);
-		slider_transition = 5;
-		return slider_transition;
-	}
+
 	return slider_transition;
 }
 

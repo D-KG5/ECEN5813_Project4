@@ -20,8 +20,8 @@
 // enum for wait/slider poll transitions
 typedef enum{
 	STATE_LEFT,
-	STATE_TIMEOUT_6,
-	STATE_TIMEOUT_15,
+//	STATE_TIMEOUT_6,
+//	STATE_TIMEOUT_15,
 	STATE_RIGHT,
 	SLIDER_TRANS_NUM_STATES
 } SliderState_t;

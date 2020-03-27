@@ -150,16 +150,17 @@ int main(void) {
     		// if ret = 2 then exit current state machine and end program
     		if(ret == 2){
             	//start next state machine
-    			Log_string("Start next state machine\r\n\n", MAIN, LOG_STATUS);
+    			Log_string("Start next state machine SPI\r\n\n", MAIN, LOG_STATUS);
     			ret = 0;
 //    			table_StateMachine_init();
+    			spi_StateMachine_init();
     			LED_off(ALL);
-    			state_machine = STATE_MACHINE_TABLE;
+    			state_machine = STATE_MACHINE_SPI;
         	}
     		break;
 		// use table state machine
     	case STATE_MACHINE_TABLE:
-    		Log_string("Starting next sm\r\n", MAIN, LOG_STATUS);
+    		Log_string("Starting Table\r\n", MAIN, LOG_STATUS);
 //        	ret = table_event_handler();
     		ret = 2;
         	// if ret = 1 then exit current state machine and end program
@@ -176,7 +177,7 @@ int main(void) {
     			ret = 0;
     			spi_StateMachine_init();
     			LED_off(ALL);
-    			state_machine = STATE_MACHINE_SPI;
+    			state_machine = STATE_MACHINE_NONE;
         	}
     		break;
 		// use spi state machine
@@ -192,12 +193,16 @@ int main(void) {
     		// if ret = 2 then exit current state machine and end program
     		if(ret == 2){
             	//start next state machine
-    			Log_string("Start next state machine\r\n", MAIN, LOG_STATUS);
+    			Log_string("Start next state machine State\r\n", MAIN, LOG_STATUS);
     			ret = 0;
     			state_StateMachine_init();
     			LED_off(ALL);
     			state_machine = STATE_MACHINE_STATE;
         	}
+    		break;
+    	case STATE_MACHINE_NONE:
+    		Log_string("End of the line\r\n", MAIN, LOG_STATUS);
+    		return 0; //end program
     	default:
     		break;
     	}
