@@ -106,7 +106,8 @@ void LED_on(uint8_t color){
 }
 
 // flash LED num_flashes times
-void LED_flash(uint8_t color, uint8_t num_flashes){
+int LED_flash(uint8_t color, uint8_t num_flashes){
+	int flash = 0;
 	Log_string("Flashing X times: ", LED_FLASH, LOG_DEBUG);
 	Log_integer(num_flashes, EMPTY_NAME, LOG_DEBUG);
 	for(int i = 0; i < num_flashes; i++){
@@ -114,5 +115,7 @@ void LED_flash(uint8_t color, uint8_t num_flashes){
 		Delay(1000000);
 		LED_off(color);
 		Delay(1000000);
+		flash++;
 	}
+	return flash;
 }

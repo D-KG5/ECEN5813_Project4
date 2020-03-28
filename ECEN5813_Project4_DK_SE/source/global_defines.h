@@ -9,11 +9,12 @@
 #define GLOBAL_DEFINES_H_
 
 #include "fsl_debug_console.h"
+#include "uCUnit/uCUnit.h"
 #include "logger.h"
 
-// macros to enable/disable logging, user interaction
+// macros to enable/disable logging, testing
 #define LOGGING_MODE
-#define USER_INTERACTION
+//#define TESTING_MODE
 
 // enable/disable logging
 #ifdef LOGGING_MODE

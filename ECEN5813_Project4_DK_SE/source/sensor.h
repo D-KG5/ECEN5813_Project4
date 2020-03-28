@@ -10,9 +10,9 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-bool Sensor_enable(void);
-bool Sensor_disable(void);
-bool read_xyz(void);
-void display_state(void);
+bool Sensor_poll_enable(void);
+bool Sensor_poll_disable(void);
+bool read_xyz_poll(void);
+void display_state_poll(void);
 
 #endif /* SENSOR_H_ */

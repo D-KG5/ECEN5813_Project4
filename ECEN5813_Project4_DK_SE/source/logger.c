@@ -24,7 +24,9 @@ static const char* log_levels[] = {"Status:", "Debug:", "Test:", ""};
 func_names_t func_name;
 static const char* func_names[] = {"main:", "POST:", "Log_enable:", "Log_level:", "LED_init:", "LED_off:",
 							"LED_off:", "LED_flash:", "I2C_init:", "Sensor_enable:",
-							"Sensor_disable:", "Read_xyz:", "Slider_init:", "Slider_poll:", "state_event_handler:", "SPI_init", "spi_event_handler", ""};
+							"Sensor_disable:", "Read_xyz:", "Slider_init:", "Slider_poll:", "state_event_handler:",
+							"SPI_init", "spi_event_handler", "UCUNIT_WriteString", "UCUNIT_WriteInt", "UCUNIT_Init",
+							"UCUNIT_Shutdown", ""};
 
 static bool enabled = false;
 
@@ -101,7 +103,7 @@ int Log_data(uint8_t * seq, uint8_t len, func_names_t func, log_level_t level){
 }
 
 // display a string
-int Log_string(const char * string, func_names_t func, log_level_t level){
+int Log_string(char * string, func_names_t func, log_level_t level){
 	log_status = LOG_FAILED;
 #if LOGGING
 	if(enabled){
@@ -117,7 +119,7 @@ int Log_string(const char * string, func_names_t func, log_level_t level){
 }
 
 // display an integer
-int Log_integer(uint32_t integer, func_names_t func, log_level_t level){
+int Log_integer(int32_t integer, func_names_t func, log_level_t level){
 	log_status = LOG_FAILED;
 #if LOGGING
 	if(enabled){

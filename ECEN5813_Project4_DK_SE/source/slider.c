@@ -73,12 +73,22 @@ int32_t Slider_poll(void){
 	if(val < LEFT_LOWER){	// left slider touch transition
 		LED_off(ALL);
 	} else if((val > LEFT_LOWER) && (val <= LEFT_HIGHER)){
+#ifdef TESTING_MODE
+		UCUNIT_TestcaseBegin("Slider Scan Left Range Test\r\n");
+		UCUNIT_CheckIsInRange(val, LEFT_LOWER, LEFT_HIGHER);
+		UCUNIT_TestcaseEnd();
+#endif
 		LED_on(RED);
 		Log_string("Slider valueL ", SLIDER_POLL, LOG_TEST);
 		Log_integer(val, EMPTY_NAME, LOG_TEST);
 		slider_transition = STATE_LEFT;
 		return slider_transition;
 	} else if((val >= RIGHT_LOWER) && (val <= RIGHT_HIGHER)){	// right slider touch transition
+#ifdef TESTING_MODE
+		UCUNIT_TestcaseBegin("Slider Scan Right Range Test\r\n");
+		UCUNIT_CheckIsInRange(val, RIGHT_LOWER, RIGHT_HIGHER);
+		UCUNIT_TestcaseEnd();
+#endif
 		LED_on(BLUE);
 		Log_string("Slider valueR ", SLIDER_POLL, LOG_TEST);
 		Log_integer(val, EMPTY_NAME, LOG_TEST);

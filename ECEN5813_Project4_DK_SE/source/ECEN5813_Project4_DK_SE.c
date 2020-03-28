@@ -60,28 +60,43 @@
 sm_num_t state_machine;
 
 // i2c and sensor status for POST
-bool i2c_status = false;
-bool spi_status = false;
-bool sensor_status = false;
+bool i2c_poll_status = false;
+bool spi_poll_status = false;
+bool sensor_poll_status = false;
 
 bool POST(void){
 	LED_on(BLUE);// set blue LED
-    i2c_status = I2C_init();
-    if(!i2c_status){
+    i2c_poll_status = I2C_init();
+#ifdef TESTING_MODE
+	UCUNIT_TestcaseBegin("I2C Poll Initialization Test\r\n");
+	UCUNIT_CheckIsEqual(1, i2c_poll_status);
+	UCUNIT_TestcaseEnd();
+#endif
+    if(!i2c_poll_status){
     	// failed to init i2c
     	Log_string("POST FAILED: I2C\r\n", POST_FUNC, LOG_STATUS);
     	LED_flash(RED, 1); // blink red led once
     	return false;
     }
-    sensor_status = Sensor_enable();
-    if(!sensor_status){
+    sensor_poll_status = Sensor_poll_enable();
+#ifdef TESTING_MODE
+	UCUNIT_TestcaseBegin("Sensor Poll Initialization Test\r\n");
+	UCUNIT_CheckIsEqual(1, sensor_poll_status);
+	UCUNIT_TestcaseEnd();
+#endif
+    if(!sensor_poll_status){
     	// failed to init sensor
     	Log_string("POST FAILED: SENSOR\r\n", POST_FUNC, LOG_STATUS);
     	LED_flash(RED, 2); // blink red led twice
     	return false;
     }
-    spi_status = SPI_init();
-    if(!spi_status){
+    spi_poll_status = SPI_init();
+#ifdef TESTING_MODE
+	UCUNIT_TestcaseBegin("SPI Poll Initialization Test\r\n");
+	UCUNIT_CheckIsEqual(1, spi_poll_status);
+	UCUNIT_TestcaseEnd();
+#endif
+    if(!spi_poll_status){
     	// failed to init spi
     	Log_string("POST FAILED: SPI\r\n", POST_FUNC, LOG_STATUS);
     	LED_flash(RED, 3); // blink red led thrice
@@ -105,7 +120,12 @@ int main(void) {
 
     // enable logging
     Log_enable();
+#ifdef TESTING_MODE
+    Log_level(LOG_TEST);
+    UCUNIT_Init();
+#else
     Log_level(LOG_DEBUG);
+#endif
 
     // enable peripherals
     LED_init();
@@ -123,13 +143,15 @@ int main(void) {
     	Log_string("POST FAILED\r\n", MAIN, LOG_STATUS);
     	return 1;
     }
-//    LED_on(GREEN);
-//    Log_integer(0, MAIN, LOG_STATUS);
-//    LED_flash(GREEN, 1);
-//    Log_integer(1, MAIN, LOG_DEBUG);
-//    LED_flash(BLUE, 2);
-//    Log_integer(2, MAIN, LOG_TEST);
-//    LED_flash(RED, 3);
+
+#ifdef TESTING_MODE
+    UCUNIT_TestcaseBegin("LED Flashing Tests\r\n");
+    LED_off(ALL);
+    UCUNIT_CheckIsEqual(1, LED_flash(GREEN, 1));
+    UCUNIT_CheckIsEqual(2, LED_flash(BLUE, 2));
+    UCUNIT_CheckIsEqual(3, LED_flash(RED, 3));
+    UCUNIT_TestcaseEnd();
+#endif
 
     static int8_t ret = 0;
     state_machine = STATE_MACHINE_STATE;
@@ -197,11 +219,15 @@ int main(void) {
     			ret = 0;
     			state_StateMachine_init();
     			LED_off(ALL);
-    			state_machine = STATE_MACHINE_STATE;
+    			state_machine = STATE_MACHINE_NONE;
         	}
     		break;
     	case STATE_MACHINE_NONE:
     		Log_string("End of the line\r\n", MAIN, LOG_STATUS);
+#ifdef TESTING_MODE
+    	    UCUNIT_WriteSummary();
+    	    UCUNIT_Shutdown();
+#endif
     		return 0; //end program
     	default:
     		break;

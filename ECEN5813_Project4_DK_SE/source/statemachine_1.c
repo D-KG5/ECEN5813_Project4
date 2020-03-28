@@ -34,7 +34,7 @@ int8_t state_event_handler(void){
 	switch(sensor_sm1.current_state){
 	case STATE_READ_XYZ_STATE:	// in Read XYZ_Acc
 		Log_string("STATE_READ_XYZ_STATE\r\n", STATE_EVENT_HANDLER, LOG_TEST);
-		read_state = read_xyz();
+		read_state = read_xyz_poll();
 		// decide next state if able to read xyz values state
 		if(read_state){
 			sensor_sm1.next_state = STATE_DISPLAY_STATE;
@@ -44,7 +44,7 @@ int8_t state_event_handler(void){
 		break;
 	case STATE_DISPLAY_STATE:	// in Process/Display state
 		Log_string("STATE_DISPLAY_STATE\r\n", STATE_EVENT_HANDLER, LOG_TEST);
-		display_state();
+		display_state_poll();
 		sensor_sm1.next_state = STATE_SLIDER_POLL_STATE;
 		break;
 	case STATE_SLIDER_POLL_STATE:	// in Wait/Poll Slider state
@@ -89,6 +89,11 @@ int8_t state_event_handler(void){
 			if(timeout_counter <= 5){	// timeouts 1 to 5 transition (also include logic for initial slider poll value
 				sensor_sm1.next_state = STATE_READ_XYZ_STATE;
 			} else if(timeout_counter >= 6){	// timeout 6 transition and reset entrance counter
+#ifdef TESTING_MODE
+				UCUNIT_TestcaseBegin("State-driven I2C State Machine Timeout 6 Test\r\n");
+				UCUNIT_CheckIsEqual(6, timeout_counter);
+				UCUNIT_TestcaseEnd();
+#endif
 				timeout_counter = 0;
 				sensor_sm1.next_state = STATE_NEXT_SM_STATE;
 			} else{	// error
