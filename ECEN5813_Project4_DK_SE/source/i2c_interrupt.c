@@ -23,7 +23,11 @@
 #include"i2c_interrupt.h"
 
 int a[6];
+uint8_t data[6];
 
+int16_t temp[3];
+int interrupt_trasnmit;
+int16_t acc_X, acc_Y, acc_Z;
 void enbaleinterrupt(void)
 {
 __disable_irq();

@@ -89,7 +89,7 @@ void i2c_wait(void){
 }
 
 //send start sequence
-void i2c_starti(void){
+void i2c_start(void){
 	I2C_TRAN;				// set to transmit mode
 	I2C_M_START;			// send start
 }
