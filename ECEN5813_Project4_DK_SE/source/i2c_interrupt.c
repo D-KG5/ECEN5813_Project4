@@ -5,14 +5,7 @@
  *      Author: sagar
  */
 #include <stdio.h>
-#include "board.h"
-#include "peripherals.h"
-#include "pin_mux.h"
-#include "clock_config.h"
-#include "MKL25Z4.h"
-#include "fsl_debug_console.h"
-
-
+#include <stdint.h>
 #include "slider.h"
 #include "i2c_poll.h"
 #include <stdbool.h>
@@ -33,12 +26,7 @@ void enbaleinterrupt(void)
 __disable_irq();
 	//set interrupt
     I2C0->C1 |= (I2C_C1_IICIE_MASK);
-
-
 	//enable i2c and set to master mode
-
-
-
     NVIC->ICPR[0] |= 1 << ((I2C0_IRQn)%32);
     NVIC->ISER[0] |= 1 << ((I2C0_IRQn)%32);
 
@@ -46,10 +34,6 @@ __disable_irq();
 }
 void i2c_Transmit(void)
 {
-
-
-
-
 	I2C0->C1 |= I2C_C1_MST_MASK;
 	I2C0->D = ((SLAVE_ADDRESS << 1) | READ);
 
@@ -59,39 +43,12 @@ void i2c_Transmit(void)
 
 int read_full_xyz()
 {
-	//int i;
-//	uint8_t data[6];
-
-
 	i2c_starti();
 	i2c_readsetupi( SLAVE_ADDRESS, REG_XHI,0);
-
-
-
-	// Read five bytes in repeated mode
-//	for( i=0; i<5; i++)	{
-//		data[i] = i2c_repeated_read(0);
-//	}
-//	// Read last byte ending repeated mode
-//	data[i] = i2c_repeated_read(1);
-
-//	for ( i=0; i<3; i++ ) {
-//		temp[i] = (int16_t) ((data[2*i]<<8) | data[2*i+1]);
-//	}
-//
-//	// Align for 14 bits
-//	acc_X = temp[0]/4;
-//	acc_Y = temp[1]/4;
-//	acc_Z = temp[2]/4;
-//	printf("%d\n",acc_X);
 
 	return 1;
 
 }
-
-
-
-
 
 void i2c_starti()
 {
@@ -131,14 +88,11 @@ void i2c_readsetupi(uint8_t dev, uint8_t address,uint8_t isLastRead)
 
 void I2C0_IRQHandler(void)
 {
-
-
 	I2C0->S  |= I2C_S_IICIF_MASK;// Clear interrupt flag
-
 
 	static int i=0;
 
-	 interrupt_trasnmit=0;
+	interrupt_trasnmit=0;
 
 	//lock_detect = 0;
 
@@ -160,42 +114,14 @@ void I2C0_IRQHandler(void)
 
 	if(i==5)
 	{
-
-//		for ( int j=0; j<3; j++ ) {
-//			temp[j] = (int16_t) ((data[2*j]<<8) | data[2*j+1]);
-//		}
-//
-//		// Align for 14 bits
-//		acc_X = temp[0]/4;
-//		acc_Y = temp[1]/4;
-//		acc_Z = temp[2]/4;
-//
-//		printf("X: %d Y: %d Z: %d\n ",acc_X,acc_Y,acc_Z);
 		interrupt_trasnmit=1;
 		i=-1;
-//        printf("Average: %d",((acc_X+acc_Y+acc_Z)/3));
 
 		I2C0->C1 &=~ (I2C_C1_IICIE_MASK);
 		//diable nvic
 
-
-
 	}
-
-
-
-
-
-
-
-
-
-
-
 i++;
-
-  //  printf("Hello\n");
-
 
 
 }
@@ -204,12 +130,7 @@ i++;
 
 void dispaly_values(void)
 {
-	printf("register_value %d\n",a[0]);
-//	printf("register_value %d\n ",a[1]);
-//	printf("register_value %d\n ",a[2]);
-//	printf("register_value %d\n ",a[3]);
-//	printf("register_value %d\n ",a[4]);
-//	printf("register_value %d\n ",a[5]);
+	printf("register_value %d\r\n",a[0]);
 
 	for ( int k=0; k<3; k++ ) {
 		temp[k] = (int16_t) ((a[2*k]<<8) | a[2*k+1]);
@@ -221,33 +142,9 @@ void dispaly_values(void)
 	acc_Z = temp[2]/4;
 
 
-	printf("X: %d Y: %d Z: %d\n ",acc_X,acc_Y,acc_Z);
-	printf("Average %d\n",((acc_X+acc_Y+acc_Z)/3) );
-	printf("Low values %d %d %d\n", a[1],a[3],a[5]);
-	printf("High values %d %d %d\n", a[0],a[2],a[4]);
-
-//	//https://code4coding.com/c-programfind-smallest-of-three-numbers-using-function/
-//
-//    if(acc_X<acc_Y){//compare num1 and num2
-//            if(acc_X<acc_Z){//compare num1 and num3
-//         printf("Smallest number is: %d\n",acc_X);
-//            }
-//            else{
-//                printf("Smallest number is: %d\n",acc_Z);
-//            }
-//    }
-//    else{
-//        if(acc_Y<acc_Z){//compare num2 and num1
-//            printf("Smallest number is: %d\n",acc_Y);
-//        }
-//        else{
-//            printf("Smallest number is: %d\n",acc_Z);
-//        }
-//
-//
-//
-//}
-
-
+	printf("X: %d Y: %d Z: %d\r\n\n ",acc_X,acc_Y,acc_Z);
+	printf("Average %d\r\n\n",((acc_X+acc_Y+acc_Z)/3) );
+	printf("Low values %d %d %d\r\n\n", a[1],a[3],a[5]);
+	printf("High values %d %d %d\r\n\n", a[0],a[2],a[4]);
 }
 
