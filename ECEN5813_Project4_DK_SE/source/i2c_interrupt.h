@@ -19,3 +19,4 @@ void enbaleinterrupt(void);
 void i2c_Transmit(void);
 
 void dispaly_values(void);
+int read_full_xyz(void);

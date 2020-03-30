@@ -56,6 +56,43 @@ void i2c_Transmit(void)
 
 }
 
+
+int read_full_xyz()
+{
+	//int i;
+//	uint8_t data[6];
+
+
+	i2c_starti();
+	i2c_readsetupi( SLAVE_ADDRESS, REG_XHI,0);
+
+
+
+	// Read five bytes in repeated mode
+//	for( i=0; i<5; i++)	{
+//		data[i] = i2c_repeated_read(0);
+//	}
+//	// Read last byte ending repeated mode
+//	data[i] = i2c_repeated_read(1);
+
+//	for ( i=0; i<3; i++ ) {
+//		temp[i] = (int16_t) ((data[2*i]<<8) | data[2*i+1]);
+//	}
+//
+//	// Align for 14 bits
+//	acc_X = temp[0]/4;
+//	acc_Y = temp[1]/4;
+//	acc_Z = temp[2]/4;
+//	printf("%d\n",acc_X);
+
+	return 1;
+
+}
+
+
+
+
+
 void i2c_starti()
 {
 	I2C_TRAN;							/*set to transmit mode */
