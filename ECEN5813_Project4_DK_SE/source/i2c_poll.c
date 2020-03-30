@@ -95,20 +95,20 @@ void i2c_starti(void){
 }
 
 //send device and register addresses
-void i2c_readsetupi(uint8_t dev, uint8_t address){
-	I2C0->D = dev;			// send dev address
-	I2C_WAIT				// wait for completion
-
-	I2C0->D =  address;		// send read address
-	I2C_WAIT				// wait for completion
-
-	I2C_M_RSTART;			// repeated start
-	I2C0->D = (dev | READ);	// send dev address (read)
-	I2C_WAIT				// wait for completion
-
-	I2C_REC;				// set to receive mode
-
-}
+//void i2c_readsetup(uint8_t dev, uint8_t address){
+//	I2C0->D = dev;			// send dev address
+//	I2C_WAIT				// wait for completion
+//
+//	I2C0->D =  address;		// send read address
+//	I2C_WAIT				// wait for completion
+//
+//	I2C_M_RSTART;			// repeated start
+//	I2C0->D = (dev | READ);	// send dev address (read)
+//	I2C_WAIT				// wait for completion
+//
+//	I2C_REC;				// set to receive mode
+//
+//}
 
 // funcs for reading and writing a single byte using 7bit addressing reads a byte from dev:address
 uint8_t i2c_read_byte(uint8_t dev, uint8_t address){
