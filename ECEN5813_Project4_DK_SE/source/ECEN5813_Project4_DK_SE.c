@@ -55,9 +55,10 @@
 
 #include "statemachine_3.h"
 #include "logger.h"
-
+#include"table.h"
 /* TODO: insert other definitions and declarations here. */
 // enum for state machines
+int end;
 sm_num_t state_machine;
 
 // i2c and sensor status for POST
@@ -177,32 +178,27 @@ int main(void) {
     			Log_string("Start next state machine SPI\r\n\n", MAIN, LOG_STATUS);
     			ret = 0;
 //    			table_StateMachine_init();
-    			spi_StateMachine_init();
+   // 			spi_StateMachine_init();
+
     			LED_off(ALL);
-    			state_machine = STATE_MACHINE_SPI;
+    			state_machine = STATE_MACHINE_TABLE;
         	}
     		break;
 		// use table state machine
     	case STATE_MACHINE_TABLE:
     		Log_string("Starting Table\r\n", MAIN, LOG_STATUS);
-//        	ret = table_event_handler();
-    		ret = 2;
-        	// if ret = 1 then exit current state machine and end program
-    		if(ret == 1){
-    			Log_string("Exiting state machine table\r\n", MAIN, LOG_STATUS);
-    			LED_off(ALL);
-    			SysTick_disable();
-            	return 0;
-        	}
-    		// if ret = 2 then exit current state machine and end program
-    		if(ret == 2){
-            	//start next state machine
-    			Log_string("Start next state machine\r\n\n", MAIN, LOG_STATUS);
-    			ret = 0;
+
+    		Tabledriven_StateMachine_init();
+    		if(end==1)
+    		{
+    			return 0;
+    		}
+
+    		if(end==2)
+    		{
+    			state_machine = STATE_MACHINE_SPI;
     			spi_StateMachine_init();
-    			LED_off(ALL);
-    			state_machine = STATE_MACHINE_NONE;
-        	}
+    		}
     		break;
 		// use spi state machine
     	case STATE_MACHINE_SPI:
