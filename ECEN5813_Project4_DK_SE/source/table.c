@@ -94,6 +94,11 @@ printf("The number of times it has entered the state machine %d\r\n",count);
 
 			else if(count==6) //or left slider
 			{
+#ifdef TESTING_MODE
+				UCUNIT_TestcaseBegin("Table-driven I2C State Machine Timeout 6 Test\r\n");
+				UCUNIT_CheckIsEqual(6, count);
+				UCUNIT_TestcaseEnd();
+#endif
 				printf("Enter previous state machine\r\n");
 				end=2;
 			}
