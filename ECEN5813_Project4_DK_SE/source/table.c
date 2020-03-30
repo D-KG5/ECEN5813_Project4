@@ -51,7 +51,7 @@ extern int state_1(const struct state *s_p)
 
 	else
 	{
-		printf("Sensor disconnect and END");
+		printf("Sensor disconnect and END\r\n");
 		LED_on(RED);
 	//	Control_RGB_LEDs(1, 0 , 0);
 		state_arr[3].func_p(&state_arr[3]);//go to last state to end the state machine
@@ -71,7 +71,7 @@ extern int state_2(const struct state *s_p)
 
 extern int state_3(const struct state *s_p)
 {
-printf("The number of times it has entered the state machine %d\n",count);
+printf("The number of times it has entered the state machine %d\r\n",count);
 
 
 //wait for 3 second and later check for slider status
@@ -94,7 +94,7 @@ printf("The number of times it has entered the state machine %d\n",count);
 
 			else if(count==6) //or left slider
 			{
-				printf("Enter previous state machine");
+				printf("Enter previous state machine\r\n");
 				end=2;
 			}
 
