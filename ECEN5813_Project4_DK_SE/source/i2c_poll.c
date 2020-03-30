@@ -89,13 +89,13 @@ void i2c_wait(void){
 }
 
 //send start sequence
-void i2c_start(void){
+void i2c_starti(void){
 	I2C_TRAN;				// set to transmit mode
 	I2C_M_START;			// send start
 }
 
 //send device and register addresses
-void i2c_read_setup(uint8_t dev, uint8_t address){
+void i2c_readsetupi(uint8_t dev, uint8_t address){
 	I2C0->D = dev;			// send dev address
 	I2C_WAIT				// wait for completion
 

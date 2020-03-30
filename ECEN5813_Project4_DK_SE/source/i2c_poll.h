@@ -50,8 +50,8 @@
 bool I2C_init(void);
 void i2c_busy(void);
 void i2c_wait(void);
-void i2c_start(void);
-void i2c_read_setup(uint8_t dev, uint8_t address);
+void i2c_starti(void);
+void i2c_readsetupi(uint8_t dev, uint8_t address);
 uint8_t i2c_read_byte(uint8_t dev, uint8_t address);
 void i2c_write_byte(uint8_t dev, uint8_t address, uint8_t data);
 
