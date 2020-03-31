@@ -90,20 +90,21 @@ PRINTF("The number of times it has entered this state machine is %d\r\n",count);
 		{
 
 			int op=Slider_scan();
+			Delay(50000);
 		//	printf("%d\n",op);
 				if(op>690 && op<2700) //if it is right slider touch it will end program!
 				{
+					count=50;//just for reference 50 is used
 
-					Log_string("Right transition. End program\r\n", TABLEDRIVEN_STATEMACHINE_INIT, LOG_STATUS);
-					state_arr[3].func_p(&state_arr[3]);//go to last state to end the state machine
 				}
 	              else if(op>35 && op<680 ) //if left slider it will go into next SM
 	               {
 
-	            	   count=100;
+	            	   count=100;//just for reference 100 is used //100=left and 50=right
 	               }
 
 		}
+
 		if(timeout)//making IRQ wait stop
 		{
 			timeout = false;
@@ -136,6 +137,13 @@ PRINTF("The number of times it has entered this state machine is %d\r\n",count);
 			    Log_string("Left transition. Go to other state machine\r\n", TABLEDRIVEN_STATEMACHINE_INIT, LOG_STATUS);
 				end=2;//for the left slider to go to SPi state machine
 			}
+
+
+		else if(count==50)
+		{
+			Log_string("Right transition. End program\r\n", TABLEDRIVEN_STATEMACHINE_INIT, LOG_STATUS);
+			state_arr[3].func_p(&state_arr[3]);//go to last state to end the state machine
+		}
 	return 0;
 }
 
