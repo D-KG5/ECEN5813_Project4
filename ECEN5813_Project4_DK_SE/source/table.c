@@ -28,8 +28,9 @@ int b;
 volatile int count;
 extern int end;
 
-//static bool timer_enabled = false;
+static bool timer_enabled = false;
 
+extern bool timeout;
 
 int Tabledriven_StateMachine_init()
 {
@@ -79,48 +80,62 @@ extern int state_3(const struct state *s_p)
 PRINTF("The number of times it has entered this state machine is %d\r\n",count);
 
 
-//wait for 3 second and later check for slider status
-		Delay(3000);
+
 		//checking systick
-//		if(!timer_enabled){
-//			SysTick_enable();
-//			timer_enabled = true;
-//		}
+		if(!timer_enabled){
+			SysTick_enable();
+			timer_enabled = true;
+		}
+		while(!timeout)
+		{
 
-		int op=Slider_scan();
-	//	printf("%d\n",op);
-			if(op>690 && op<2700) //if it is right slider touch it will end program!
-			{
+			int op=Slider_scan();
+		//	printf("%d\n",op);
+				if(op>690 && op<2700) //if it is right slider touch it will end program!
+				{
 
-				Log_string("Right transition. End program\r\n", TABLEDRIVEN_STATEMACHINE_INIT, LOG_STATUS);
-				state_arr[3].func_p(&state_arr[3]);//go to last state to end the state machine
-			}
+					Log_string("Right transition. End program\r\n", TABLEDRIVEN_STATEMACHINE_INIT, LOG_STATUS);
+					state_arr[3].func_p(&state_arr[3]);//go to last state to end the state machine
+				}
+	              else if(op>35 && op<680 ) //if left slider it will go into next SM
+	               {
 
-			else if(count<6) //if number of time it entered is less than 6 times it should read xyz again
+	            	   count=100;
+	               }
+
+		}
+		if(timeout)//making IRQ wait stop
+		{
+			timeout = false;
+		}
+
+
+
+		 if(count<6) //if number of time it entered is less than 6 times it should read xyz again
 		{
 				count=count+1;
 				state_arr[0].func_p(&state_arr[0]);
 		}
 
-			else if(count==6 || (op>35 && op<680)) //if there is timeout 6 or left slider it will go into next SM
+		else if(count==6) //if there is timeout 6
 			{
 #ifdef TESTING_MODE
 				UCUNIT_TestcaseBegin("Table-driven I2C State Machine Timeout 6 Test\r\n");
 				UCUNIT_CheckIsEqual(6, count);
 				UCUNIT_TestcaseEnd();
 #endif
-               if(count==6)
-               {
+
 				Log_string("Timeout six times. Go to other state machine\r\n", TABLEDRIVEN_STATEMACHINE_INIT, LOG_STATUS);
-               }
-               else
-               {
-            	   Log_string("Left transition. Go to other state machine\r\n", TABLEDRIVEN_STATEMACHINE_INIT, LOG_STATUS);
-               }
+
+
 				end=2;
 			}
 
-
+		else if(count==100)
+			{
+			    Log_string("Left transition. Go to other state machine\r\n", TABLEDRIVEN_STATEMACHINE_INIT, LOG_STATUS);
+				end=2;//for the left slider to go to SPi state machine
+			}
 	return 0;
 }
 
