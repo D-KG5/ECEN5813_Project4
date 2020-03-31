@@ -25,7 +25,7 @@ func_names_t func_name;
 static const char* func_names[] = {"main:", "POST:", "Log_enable:", "Log_level:", "LED_init:", "LED_off:",
 							"LED_off:", "LED_flash:", "I2C_init:", "Sensor_enable:",
 							"Sensor_disable:", "Read_xyz:", "Slider_init:", "Slider_poll:", "state_event_handler:","Tabledriven_StateMachine_init:",
-							"SPI_init", "spi_event_handler", "UCUNIT_WriteString", "UCUNIT_WriteInt", "UCUNIT_Init",
+					        "SPI_init", "spi_event_handler", "UCUNIT_WriteString", "UCUNIT_WriteInt", "UCUNIT_Init",
 							"UCUNIT_Shutdown", ""};
 
 static bool enabled = false;

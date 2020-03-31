@@ -16,6 +16,19 @@
 #include <stdio.h>
 
 
+
+
+// enum for state state machine states
+typedef enum{
+	STATE_READ_XYZ,
+	STATE_TABLE_DISPLAY,
+
+} SensorStateTable_t;
+
+
+
+
+
 struct state;
 
 /* State function prototype */
