@@ -69,6 +69,7 @@ bool SPI_Loopback(void){
 	return connected;
 }
 
-void display_SPI(void){
+void display_SPI(int8_t counter){
+	PRINTF("Display State Entry Counter: %d\r\n", counter);
 	PRINTF("In: %c\t Out: %c\r\n", in, out);
 }

@@ -154,8 +154,6 @@ int main(void) {
     UCUNIT_CheckIsEqual(3, LED_flash(RED, 3));
     UCUNIT_TestcaseEnd();
 #endif
-//    read_full_xyz();
-//    dispaly_values();
     static int8_t ret = 0;
     state_machine = STATE_MACHINE_STATE;
     /* Enter an infinite loop, containing state machines */

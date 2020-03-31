@@ -23,6 +23,7 @@ StateMachine3_t sensor_sm3;
 
 static bool read_state = false;
 static int8_t timeout_counter = 0;
+static int8_t display_state_counter = 0;
 static int32_t slider_poll_ret = 3;
 
 extern bool timeout;
@@ -44,7 +45,8 @@ int8_t spi_event_handler(void){
 		break;
 	case STATE_DISPLAY_SPI:	// in Process/Display state
 		Log_string("STATE_DISPLAY_SPI\r\n", SPI_EVENT_HANDLER, LOG_TEST);
-		display_SPI();
+		display_state_counter++;
+		display_SPI(display_state_counter);
 		sensor_sm3.next_state = STATE_SLIDER_POLL_SPI;
 		break;
 	case STATE_SLIDER_POLL_SPI:	// in Wait/Poll Slider state
@@ -129,7 +131,9 @@ int8_t spi_event_handler(void){
 
 // sets and resets state driven state machine
 void spi_resetStateMachine(void){
-	/* initialize state machine states */
+	/* initialize state machine states and reset counters */
+	timeout_counter = 0;
+	display_state_counter = 0;
 	sensor_sm3.current_state = STATE_READ_XYZ_SPI;
 	sensor_sm3.next_state = STATE_DISPLAY_SPI;
 }

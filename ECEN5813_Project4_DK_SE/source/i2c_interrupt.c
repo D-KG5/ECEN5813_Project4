@@ -9,10 +9,7 @@
 #include "slider.h"
 #include "i2c_poll.h"
 #include <stdbool.h>
-
 #include "global_defines.h"
-
-
 #include"i2c_interrupt.h"
 
 int a[6];
@@ -21,9 +18,10 @@ uint8_t data[6];
 int16_t temp[3];
 int interrupt_trasnmit;
 int16_t acc_X, acc_Y, acc_Z;
+
 void enbaleinterrupt(void)
 {
-__disable_irq();
+	__disable_irq();
 	//set interrupt
     I2C0->C1 |= (I2C_C1_IICIE_MASK);
 	//enable i2c and set to master mode
@@ -32,6 +30,7 @@ __disable_irq();
 
     __enable_irq();
 }
+
 void i2c_Transmit(void)
 {
 	I2C0->C1 |= I2C_C1_MST_MASK;
@@ -39,7 +38,6 @@ void i2c_Transmit(void)
 
 
 }
-
 
 int read_full_xyz()
 {
@@ -84,8 +82,6 @@ void i2c_readsetupi(uint8_t dev, uint8_t address,uint8_t isLastRead)
 
 }
 
-
-
 void I2C0_IRQHandler(void)
 {
 	I2C0->S  |= I2C_S_IICIF_MASK;// Clear interrupt flag
@@ -125,8 +121,6 @@ i++;
 
 
 }
-
-
 
 void dispaly_values(void)
 {

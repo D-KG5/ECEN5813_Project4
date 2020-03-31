@@ -19,6 +19,6 @@
 bool SPI_init(void);
 uint8_t SPI_send(uint8_t d_out);
 bool SPI_Loopback(void);
-void display_SPI(void);
+void display_SPI(int8_t counter);
 
 #endif /* SPI_H_ */

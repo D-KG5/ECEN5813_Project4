@@ -82,7 +82,7 @@ bool read_xyz_poll(void){
 }
 
 // displays current XYZ values from sensor
-void display_state_poll(void){
+void display_state_poll(int8_t counter){
 	// get max and min values for XYZ values
 	if(acc_X > acc_Xh){
 		acc_Xh = acc_X;
@@ -110,7 +110,8 @@ void display_state_poll(void){
 	acc_Ya /= avg_counter;
 	acc_Za += acc_Z;
 	acc_Za /= avg_counter;
-	// display XYZ values
+	// display XYZ values and state entry counter
+	PRINTF("Display State Entry Counter: %d\r\n", counter);
 	PRINTF("X: %3d\tMax: %3d\tMin: %3d\tAvg: %3d\r\n", acc_X, acc_Xh, acc_Xl, acc_Xa);
 	PRINTF("Y: %3d\tMax: %3d\tMin: %3d\tAvg: %3d\r\n", acc_Y, acc_Yh, acc_Yl, acc_Ya);
 	PRINTF("Z: %3d\tMax: %3d\tMin: %3d\tAvg: %3d\r\n\r\n", acc_Z, acc_Zh, acc_Zl, acc_Za);

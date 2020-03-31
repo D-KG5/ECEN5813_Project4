@@ -23,6 +23,7 @@ StateMachine1_t sensor_sm1;
 
 static bool read_state = false;
 static int8_t timeout_counter = 0;
+static int8_t display_state_counter = 0;
 static int32_t slider_poll_ret = 3;
 
 extern bool timeout;
@@ -34,6 +35,7 @@ int8_t state_event_handler(void){
 	switch(sensor_sm1.current_state){
 	case STATE_READ_XYZ_STATE:	// in Read XYZ_Acc
 		Log_string("STATE_READ_XYZ_STATE\r\n", STATE_EVENT_HANDLER, LOG_TEST);
+
 		read_state = read_xyz_poll();
 		// decide next state if able to read xyz values state
 		if(read_state){
@@ -44,7 +46,8 @@ int8_t state_event_handler(void){
 		break;
 	case STATE_DISPLAY_STATE:	// in Process/Display state
 		Log_string("STATE_DISPLAY_STATE\r\n", STATE_EVENT_HANDLER, LOG_TEST);
-		display_state_poll();
+		display_state_counter++;
+		display_state_poll(display_state_counter);
 		sensor_sm1.next_state = STATE_SLIDER_POLL_STATE;
 		break;
 	case STATE_SLIDER_POLL_STATE:	// in Wait/Poll Slider state
@@ -129,7 +132,9 @@ int8_t state_event_handler(void){
 
 // sets and resets state driven state machine
 void state_resetStateMachine(void){
-	/* initialize state machine states */
+	/* initialize state machine states and reset counters */
+	timeout_counter = 0;
+	display_state_counter = 0;
 	sensor_sm1.current_state = STATE_READ_XYZ_STATE;
 	sensor_sm1.next_state = STATE_DISPLAY_STATE;
 }

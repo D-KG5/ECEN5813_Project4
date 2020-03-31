@@ -13,6 +13,6 @@
 bool Sensor_poll_enable(void);
 bool Sensor_poll_disable(void);
 bool read_xyz_poll(void);
-void display_state_poll(void);
+void display_state_poll(int8_t counter);
 
 #endif /* SENSOR_H_ */
