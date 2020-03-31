@@ -58,7 +58,7 @@ void i2c_starti()
 
 void i2c_readsetupi(uint8_t dev, uint8_t address,uint8_t isLastRead)
 {
-	uint8_t data;
+	//uint8_t data;
 	I2C0->D = dev;			  /*send dev address	*/
 //	while(interrupt_clear==0);							/*wait for completion */
 
@@ -78,7 +78,7 @@ void i2c_readsetupi(uint8_t dev, uint8_t address,uint8_t isLastRead)
 
 	enbaleinterrupt();
 
-	data = I2C0->D;
+//	data = I2C0->D;
 
 
 
@@ -130,7 +130,7 @@ i++;
 
 void dispaly_values(void)
 {
-	printf("register_value %d\r\n",a[0]);
+//	printf("register_value %d\r\n",a[0]);
 
 	for ( int k=0; k<3; k++ ) {
 		temp[k] = (int16_t) ((a[2*k]<<8) | a[2*k+1]);
@@ -142,9 +142,64 @@ void dispaly_values(void)
 	acc_Z = temp[2]/4;
 
 
-	printf("X: %d Y: %d Z: %d\r\n\n ",acc_X,acc_Y,acc_Z);
-	printf("Average %d\r\n\n",((acc_X+acc_Y+acc_Z)/3) );
-	printf("Low values %d %d %d\r\n\n", a[1],a[3],a[5]);
-	printf("High values %d %d %d\r\n\n", a[0],a[2],a[4]);
+	printf("X: %d Y: %d Z: %d\r\n",acc_X,acc_Y,acc_Z);
+	printf("Average %d\r\n",((acc_X+acc_Y+acc_Z)/3) );
+	//	//https://code4coding.com/c-programfind-smallest-of-three-numbers-using-function/
+
+	    if(acc_X<acc_Y){//compare num1 and num2
+	            if(acc_X<acc_Z){//compare num1 and num3
+	         printf("Low number is: %d\r\n",acc_X);
+	         if(acc_Y>acc_Z)
+			 {
+	        	 printf("High number is: %d\r\n",acc_Y);
+			 }
+	         else
+	         {
+	        	 printf("High number is: %d\r\n",acc_Z);
+	         }
+	            }
+	            else{
+	                printf("Low number is: %d\r\n",acc_Z);
+	   	         if(acc_Y>acc_X)
+	   			 {
+	   	        	 printf("High number is: %d\r\n",acc_Y);
+	   			 }
+	   	         else
+	   	         {
+	   	        	 printf("High number is: %d\r\n",acc_X);
+	   	         }
+
+	            }
+	    }
+	    else{
+	        if(acc_Y<acc_Z){//compare num2 and num1
+	            printf("Low number is: %d\r\n",acc_Y);
+
+	   	         if(acc_Z>acc_X)
+	   			 {
+	   	        	 printf("High number is: %d\r\n",acc_Z);
+	   			 }
+	   	         else
+	   	         {
+	   	        	 printf("High number is: %d\r\n",acc_X);
+	   	         }
+	        }
+	        else{
+	            printf("Low number is: %d\r\n",acc_Z);
+
+
+	   	         if(acc_Y>acc_X)
+	   			 {
+	   	        	 printf("High number is: %d\r\n",acc_Y);
+	   			 }
+	   	         else
+	   	         {
+	   	        	 printf("High number is: %d\r\n",acc_X);
+	   	         }
+
+
+	        }
+	}
+
 }
 

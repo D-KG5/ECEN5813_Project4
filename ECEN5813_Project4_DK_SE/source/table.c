@@ -71,14 +71,16 @@ extern int state_2(const struct state *s_p)
 
 extern int state_3(const struct state *s_p)
 {
-printf("The number of times it has entered the state machine %d\r\n",count);
+printf("The number of times it has entered this state machine is %d\r\n",count);
 
 
 //wait for 3 second and later check for slider status
-		Delay(900);
+		Delay(3000);
+		//checking systick
+
 
 		int op=Slider_scan();
-		printf("%d\n",op);
+	//	printf("%d\n",op);
 			if(op>690 && op<2700) //if it is right slider touch it will end program!
 			{
 
@@ -92,14 +94,14 @@ printf("The number of times it has entered the state machine %d\r\n",count);
 				state_arr[0].func_p(&state_arr[0]);
 		}
 
-			else if(count==6) //or left slider
+			else if(count==6 || (op>35 && op<680)) //or left slider
 			{
 #ifdef TESTING_MODE
 				UCUNIT_TestcaseBegin("Table-driven I2C State Machine Timeout 6 Test\r\n");
 				UCUNIT_CheckIsEqual(6, count);
 				UCUNIT_TestcaseEnd();
 #endif
-				printf("Enter previous state machine\r\n");
+				printf("Enter SPI state machine\r\n");
 				end=2;
 			}
 
