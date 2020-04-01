@@ -97,11 +97,11 @@ PRINTF("The number of times it has entered this state machine is %d\r\n\n",count
 					count=50;//just for reference 50 is used
 
 				}
-//	              else if(op>LEFT_LOWER && op<LEFT_HIGHER ) //if left slider it will go into next SM
-//	               {
-//
-//	            	   count=100;//just for reference 100 is used //100=left and 50=right
-//	               }
+	              else if(op>LEFT_LOWER && op<LEFT_HIGHER ) //if left slider it will go into next SM
+	               {
+
+	            	   count=100;//just for reference 100 is used //100=left and 50=right
+	               }
 
 		}
 
