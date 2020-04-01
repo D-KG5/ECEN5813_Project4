@@ -37,6 +37,7 @@ PES Project 4 for ECEN 5813. By Dhruva Koley and Sagar Eligar
 # Notes
 - The built-in accelerometer is used for this project.
 - The SPI function is a simple loop-back.
+- Test mode can be enabled in global_defines.h
 - The slider touch state transitions are extremely glitchy. 
 	- Right touch must be quick and forceful (leave the finger on it). 
 	- Left touch must be extremely quick (quickly remove your finger).
