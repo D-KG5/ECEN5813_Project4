@@ -5,8 +5,8 @@
  *      Author: Dhruva
  */
 
-#ifndef STATEMACHINE_3_H_
-#define STATEMACHINE_3_H_
+#ifndef STATEMACHINE_STATE_SPI_H_
+#define STATEMACHINE_STATE_SPI_H_
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -32,4 +32,4 @@ void spi_resetStateMachine(void);
 void spi_StateMachine_init(void);
 void spi_transitionState(void);
 
-#endif /* STATEMACHINE_3_H_ */
+#endif /* STATEMACHINE_STATE_SPI_H_ */

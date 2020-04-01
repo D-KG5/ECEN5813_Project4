@@ -5,8 +5,8 @@
  *      Author: Dhruva
  */
 
+#include <statemachine_state_spi.h>
 #include "spi.h"
-#include "statemachine_3.h"
 #include "logger.h"
 //#include "sensor.h"
 #include "led_control.h"
@@ -60,6 +60,7 @@ int8_t spi_event_handler(void){
 		timeout_counter++;
 		Log_string("Counter State: ", SPI_EVENT_HANDLER, LOG_TEST);
 		Log_integer(timeout_counter, EMPTY_NAME, LOG_TEST);
+		// enter if 3 second timer has not finished to check slider state (very glitchy)
 		while(!timeout){
 			poll_value = false;
 			slider_poll_ret = Slider_poll();

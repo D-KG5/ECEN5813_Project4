@@ -10,10 +10,10 @@
 #include "logger.h"
 #include <stdio.h>
 
-// from dean book
 int32_t lock_detect = 0;
 bool i2c_lock = false;
 
+// initialize I2C for polling and interrupts
 bool I2C_init(void){
 	// Enable clock to ports E and D
 	SIM->SCGC5 |= SIM_SCGC5_PORTC_MASK | SIM_SCGC5_PORTD_MASK | SIM_SCGC5_PORTE_MASK;
@@ -38,6 +38,8 @@ bool I2C_init(void){
 	return true;
 }
 
+// function to figure out if I2C lines are busy
+// inspiration from the Dean book (git repo link is broken)
 void i2c_busy(void){
 	// Start Signal
 	lock_detect=0;
@@ -78,6 +80,8 @@ void i2c_busy(void){
 	i2c_lock = true;
 }
 
+// function to wait for I2C data
+// inspiration from the Dean book (git repo link is broken)
 void i2c_wait(void){
 	lock_detect = 0;
 	while(((I2C0->S & I2C_S_IICIF_MASK) == 0) & (lock_detect < 200)) {
@@ -88,29 +92,15 @@ void i2c_wait(void){
 	I2C0->S |= I2C_S_IICIF_MASK;
 }
 
-//send start sequence
+// function to send start sequence
+// inspiration from the Dean book (git repo link is broken)
 void i2c_start(void){
 	I2C_TRAN;				// set to transmit mode
 	I2C_M_START;			// send start
 }
 
-//send device and register addresses
-//void i2c_readsetup(uint8_t dev, uint8_t address){
-//	I2C0->D = dev;			// send dev address
-//	I2C_WAIT				// wait for completion
-//
-//	I2C0->D =  address;		// send read address
-//	I2C_WAIT				// wait for completion
-//
-//	I2C_M_RSTART;			// repeated start
-//	I2C0->D = (dev | READ);	// send dev address (read)
-//	I2C_WAIT				// wait for completion
-//
-//	I2C_REC;				// set to receive mode
-//
-//}
-
-// funcs for reading and writing a single byte using 7bit addressing reads a byte from dev:address
+// function to write a byte using 7bit addressing reads a byte from dev:address
+// inspiration from the Dean book (git repo link is broken)
 uint8_t i2c_read_byte(uint8_t dev, uint8_t address){
 	uint8_t data;
 
@@ -138,7 +128,8 @@ uint8_t i2c_read_byte(uint8_t dev, uint8_t address){
 	return data;
 }
 
-// using 7bit addressing writes a byte data to dev:address
+// function to write a byte data to dev:address
+// inspiration from the Dean book (git repo link is broken)
 void i2c_write_byte(uint8_t dev, uint8_t address, uint8_t data){
 	I2C_TRAN;					// set to transmit mode
 	I2C_M_START;				// send start

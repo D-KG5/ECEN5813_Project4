@@ -7,6 +7,7 @@
 
 #ifndef SLIDER_H_
 #define SLIDER_H_
+#include <stdint.h>
 
 #define SCAN_OFFSET 544
 #define SCAN_DATA TSI0->DATA & 0xFFFF

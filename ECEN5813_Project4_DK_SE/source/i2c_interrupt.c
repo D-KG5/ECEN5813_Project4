@@ -19,6 +19,7 @@ int16_t temp[3];
 int interrupt_trasnmit;
 int16_t acc_X, acc_Y, acc_Z;
 
+// enable I2C interrupts
 void enbaleinterrupt(void)
 {
 	__disable_irq();
@@ -27,25 +28,23 @@ void enbaleinterrupt(void)
 	//enable i2c and set to master mode
     NVIC->ICPR[0] |= 1 << ((I2C0_IRQn)%32);
     NVIC->ISER[0] |= 1 << ((I2C0_IRQn)%32);
-
     __enable_irq();
 }
 
+// inspiration from the Dean book (git repo link is broken)
 void i2c_Transmit(void)//transmits the data
 {
 	I2C0->C1 |= I2C_C1_MST_MASK;
 	I2C0->D = ((SLAVE_ADDRESS << 1) | READ);
-
-
 }
 
+// start process to read XYZ values
 int read_full_xyz()
 {
 	i2c_starti();//starts the i2c
-	i2c_readsetupi( SLAVE_ADDRESS, REG_XHI,0);
+	i2c_readsetupi(SLAVE_ADDRESS, REG_XHI,0);
 
 	return 1;
-
 }
 
 void i2c_starti()
@@ -54,6 +53,8 @@ void i2c_starti()
 	I2C_M_START;					/*send start	*/
 }
 
+// read I2C device setup
+// inspiration from the Dean book (git repo link is broken)
 void i2c_readsetupi(uint8_t dev, uint8_t address,uint8_t isLastRead)
 {
 	//uint8_t data;
@@ -77,14 +78,12 @@ void i2c_readsetupi(uint8_t dev, uint8_t address,uint8_t isLastRead)
 	enbaleinterrupt();//start the interrupt
 
 //	data = I2C0->D;
-
-
-
 }
 
+// I2C ISR
 void I2C0_IRQHandler(void)
 {
-	I2C0->S  |= I2C_S_IICIF_MASK;// Clear interrupt flag
+	I2C0->S  |= I2C_S_IICIF_MASK;			// Clear interrupt flag
 
 	static int i=0;
 
@@ -97,15 +96,13 @@ void I2C0_IRQHandler(void)
 	} else	{
 		ACK;								/*ACK after read	*/
 	}
-
-	         			/*dummy read	*/
-								/*wait for completion */
-
+	         								/*dummy read	*/
+											/*wait for completion */
 	if(i==5)	{
-		I2C_M_STOP;					/*send stop	*/
+		I2C_M_STOP;							/*send stop	*/
 	}
 
-	data[i] = I2C0->D;				/*read data	*/
+	data[i] = I2C0->D;						/*read data	*/
      a[i]=I2C0->D;
 
 	if(i==5)
@@ -118,13 +115,11 @@ void I2C0_IRQHandler(void)
 
 	}
 i++;
-
-
 }
 
+// print out XYZ values
 void dispaly_values(void)
 {
-//	printf("register_value %d\r\n",a[0]);
 
 	for ( int k=0; k<3; k++ ) {
 		temp[k] = (int16_t) ((a[2*k]<<8) | a[2*k+1]);
@@ -135,67 +130,58 @@ void dispaly_values(void)
 	acc_Y = temp[1]/4;
 	acc_Z = temp[2]/4;
 
-
 	PRINTF("X: %d	   Y: %d	  Z: %d\r\n",acc_X,acc_Y,acc_Z);//printing acc_meter values
 	PRINTF("Average: %d\r\n",((acc_X+acc_Y+acc_Z)/3) );//Taking the avg of last XYZ vaLUES
-	//	// inspired from https://code4coding.com/c-programfind-smallest-of-three-numbers-using-function/
+	// inspired from https://code4coding.com/c-programfind-smallest-of-three-numbers-using-function/
 
-//printing out the low and high value of the XYZ value
-
-	    if(acc_X<acc_Y){//compare num1 and num2
-	            if(acc_X<acc_Z){//compare num1 and num3
-	         PRINTF("Low number is: %d\r\n",acc_X);
-	         if(acc_Y>acc_Z)
-			 {
-	        	 PRINTF("High number is: %d\r\n",acc_Y);
-			 }
-	         else
-	         {
-	        	 PRINTF("High number is: %d\r\n",acc_Z);
-	         }
-	            }
-	            else{
-	                PRINTF("Low number is: %d\r\n",acc_Z);
-	   	         if(acc_Y>acc_X)
-	   			 {
-	   	        	 PRINTF("High number is: %d\r\n",acc_Y);
-	   			 }
-	   	         else
-	   	         {
-	   	        	 PRINTF("High number is: %d\r\n",acc_X);
-	   	         }
-
-	            }
-	    }
-	    else{
-	        if(acc_Y<acc_Z){//compare num2 and num1
-	            PRINTF("Low number is: %d\r\n",acc_Y);
-
-	   	         if(acc_Z>acc_X)
-	   			 {
-	   	        	 PRINTF("High number is: %d\r\n",acc_Z);
-	   			 }
-	   	         else
-	   	         {
-	   	        	 PRINTF("High number is: %d\r\n",acc_X);
-	   	         }
-	        }
-	        else{
-	            PRINTF("Low number is: %d\r\n",acc_Z);
-
-
-	   	         if(acc_Y>acc_X)
-	   			 {
-	   	        	 PRINTF("High number is: %d\r\n",acc_Y);
-	   			 }
-	   	         else
-	   	         {
-	   	        	 PRINTF("High number is: %d\r\n",acc_X);
-	   	         }
-
-
-	        }
+	//printing out the low and high value of the XYZ value
+	if(acc_X<acc_Y){//compare num1 and num2
+		if(acc_X<acc_Z){//compare num1 and num3
+			PRINTF("Low number is: %d\r\n",acc_X);
+			if(acc_Y>acc_Z)
+			{
+				PRINTF("High number is: %d\r\n",acc_Y);
+			}
+			else
+			{
+				PRINTF("High number is: %d\r\n",acc_Z);
+			}
+		}
+		else{
+			PRINTF("Low number is: %d\r\n",acc_Z);
+			if(acc_Y>acc_X)
+			{
+				PRINTF("High number is: %d\r\n",acc_Y);
+			}
+			else
+			{
+				PRINTF("High number is: %d\r\n",acc_X);
+			}
+		}
 	}
-
+	else{
+		if(acc_Y<acc_Z){//compare num2 and num1
+			PRINTF("Low number is: %d\r\n",acc_Y);
+			if(acc_Z>acc_X)
+			{
+				PRINTF("High number is: %d\r\n",acc_Z);
+			}
+			else
+			{
+				PRINTF("High number is: %d\r\n",acc_X);
+			}
+			}
+		else{
+			PRINTF("Low number is: %d\r\n",acc_Z);
+			if(acc_Y>acc_X)
+			{
+				PRINTF("High number is: %d\r\n",acc_Y);
+			}
+			else
+			{
+				PRINTF("High number is: %d\r\n",acc_X);
+			}
+		}
+	}
 }
 

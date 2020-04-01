@@ -32,6 +32,9 @@
  * @file    ECEN5813_Project4_DK_SE.c
  * @brief   Application entry point.
  */
+#include <statemachine_state.h>
+#include <statemachine_state_spi.h>
+#include <statemachine_table.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
@@ -51,36 +54,34 @@
 #include "timer.h"
 #include "led_control.h"
 #include "slider.h"
-#include "statemachine_1.h"
-
-#include "statemachine_3.h"
 #include "logger.h"
-#include"table.h"
 /* TODO: insert other definitions and declarations here. */
-// enum for state machines
-int end;
+// enum for state machine state achine
 sm_num_t state_machine;
+// end status for table-driven state machine
+int end;
 
 // i2c and sensor status for POST
-bool i2c_poll_status = false;
+bool i2c_status = false;
 bool spi_poll_status = false;
 bool sensor_poll_status = false;
 
+// POST function to initialize and check I2C, SP, and sensor modules were initialized correctly
 bool POST(void){
 	LED_on(BLUE);// set blue LED
-    i2c_poll_status = I2C_init();
+    i2c_status = I2C_init();	// init and check I2C state
 #ifdef TESTING_MODE
 	UCUNIT_TestcaseBegin("I2C Poll Initialization Test\r\n");
-	UCUNIT_CheckIsEqual(1, i2c_poll_status);
+	UCUNIT_CheckIsEqual(1, i2c_status);
 	UCUNIT_TestcaseEnd();
 #endif
-    if(!i2c_poll_status){
+    if(!i2c_status){
     	// failed to init i2c
     	Log_string("POST FAILED: I2C\r\n", POST_FUNC, LOG_STATUS);
     	LED_flash(RED, 1); // blink red led once
     	return false;
     }
-    sensor_poll_status = Sensor_poll_enable();
+    sensor_poll_status = Sensor_poll_enable();	// init and check sensor state
 #ifdef TESTING_MODE
 	UCUNIT_TestcaseBegin("Sensor Poll Initialization Test\r\n");
 	UCUNIT_CheckIsEqual(1, sensor_poll_status);
@@ -92,7 +93,7 @@ bool POST(void){
     	LED_flash(RED, 2); // blink red led twice
     	return false;
     }
-    spi_poll_status = SPI_init();
+    spi_poll_status = SPI_init();	// init and check SPI state
 #ifdef TESTING_MODE
 	UCUNIT_TestcaseBegin("SPI Poll Initialization Test\r\n");
 	UCUNIT_CheckIsEqual(1, spi_poll_status);
@@ -105,7 +106,7 @@ bool POST(void){
     	return false;
     }
     Log_string("POST SUCCESS\r\n\n", POST_FUNC, LOG_STATUS);
-    LED_flash(GREEN, 1);// blink green led once
+    LED_flash(GREEN, 1);	// blink green led once
     return true;
 }
 
@@ -122,6 +123,7 @@ int main(void) {
 
     // enable logging
     Log_enable();
+    // if TESTING_MODE toggled in global_defines.h then set log level to TEST and start unit tests
 #ifdef TESTING_MODE
     Log_level(LOG_TEST);
     UCUNIT_Init();
@@ -155,8 +157,8 @@ int main(void) {
     UCUNIT_TestcaseEnd();
 #endif
     static int8_t ret = 0;
-    state_machine = STATE_MACHINE_STATE;
-    /* Enter an infinite loop, containing state machines */
+    state_machine = STATE_MACHINE_STATE;	// init state machine state machine
+    /* Enter an infinite loop, containing a state machine switching state machine */
     while(1) {
     	__asm volatile ("nop");
     	switch(state_machine){
@@ -173,11 +175,9 @@ int main(void) {
     		// if ret = 2 then exit current state machine and end program
     		if(ret == 2){
             	//start next state machine
-    			Log_string("Start next state machine SPI\r\n\n", MAIN, LOG_STATUS);
+    			Log_string("Start next state machine Table\r\n\n", MAIN, LOG_STATUS);
     			ret = 0;
-//    			table_StateMachine_init();
-   // 			spi_StateMachine_init();
-
+    			end = 0;
     			LED_off(ALL);
     			state_machine = STATE_MACHINE_TABLE;
         	}
@@ -194,6 +194,7 @@ int main(void) {
 
     		if(end==2)//either left slider touch or timeout 6 times
     		{
+    			Log_string("Start next state machine SPI\r\n\n", MAIN, LOG_STATUS);
     			state_machine = STATE_MACHINE_SPI;
     			spi_StateMachine_init();
     		}
@@ -210,21 +211,31 @@ int main(void) {
         	}
     		// if ret = 2 then exit current state machine and end program
     		if(ret == 2){
-            	//start next state machine
-    			Log_string("Start next state machine State\r\n", MAIN, LOG_STATUS);
+            	// start next state machine
+#ifdef TESTING_MODE
+    			// goes to STATE_MACHINE_NONE: end of program in TEST mode
+    			Log_string("Start next state machine NONE\r\n", MAIN, LOG_STATUS);
+    			ret = 0;
+    			LED_off(ALL);
+    			state_machine = STATE_MACHINE_NONE;
+#endif
+#ifndef TESTING_MODE
+    			// goes to STATE_MACHINE_STATE: end of program in TEST mode
+    			Log_string("Start next state machine STATE\r\n", MAIN, LOG_STATUS);
     			ret = 0;
     			state_StateMachine_init();
     			LED_off(ALL);
-    			state_machine = STATE_MACHINE_NONE;
+    			state_machine = STATE_MACHINE_STATE;
+#endif
         	}
     		break;
-    	case STATE_MACHINE_NONE:
+    	case STATE_MACHINE_NONE:	// print summary and end program after testing
     		Log_string("End of the line\r\n", MAIN, LOG_STATUS);
 #ifdef TESTING_MODE
     	    UCUNIT_WriteSummary();
     	    UCUNIT_Shutdown();
 #endif
-    		return 0; //end program
+    		return 0; // end program
     	default:
     		break;
     	}

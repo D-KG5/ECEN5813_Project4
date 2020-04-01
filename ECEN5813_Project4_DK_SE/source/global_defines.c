@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdint.h>
 
+// function to delay for X ticks
 void Delay(volatile uint32_t number){
 	while(number != 0){
 		__asm volatile("NOP");

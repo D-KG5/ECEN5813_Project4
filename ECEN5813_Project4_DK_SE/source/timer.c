@@ -37,6 +37,6 @@ void SysTick_disable(void){
 
 // systick interrupt handler
 void SysTick_Handler(){
-    timeout = true;	// set timeout bool to true
+    timeout = true;	// set timeout bool to true after 3 second timer
 }
 

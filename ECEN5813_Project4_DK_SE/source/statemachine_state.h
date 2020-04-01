@@ -5,8 +5,8 @@
  *      Author: Dhruva
  */
 
-#ifndef STATEMACHINE_1_H_
-#define STATEMACHINE_1_H_
+#ifndef STATEMACHINE_STATE_H_
+#define STATEMACHINE_STATE_H_
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -32,4 +32,4 @@ void state_resetStateMachine(void);
 void state_StateMachine_init(void);
 void state_transitionState(void);
 
-#endif /* STATEMACHINE_1_H_ */
+#endif /* STATEMACHINE_STATE_H_ */

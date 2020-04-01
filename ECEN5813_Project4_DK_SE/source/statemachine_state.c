@@ -6,7 +6,7 @@
  */
 
 #include <i2c_poll.h>
-#include "statemachine_1.h"
+#include <statemachine_state.h>
 #include "logger.h"
 #include "sensor.h"
 #include "led_control.h"
@@ -35,7 +35,7 @@ int8_t state_event_handler(void){
 	switch(sensor_sm1.current_state){
 	case STATE_READ_XYZ_STATE:	// in Read XYZ_Acc
 		Log_string("STATE_READ_XYZ_STATE\r\n", STATE_EVENT_HANDLER, LOG_TEST);
-
+		// read xyz and return status
 		read_state = read_xyz_poll();
 		// decide next state if able to read xyz values state
 		if(read_state){
@@ -46,7 +46,7 @@ int8_t state_event_handler(void){
 		break;
 	case STATE_DISPLAY_STATE:	// in Process/Display state
 		Log_string("STATE_DISPLAY_STATE\r\n", STATE_EVENT_HANDLER, LOG_TEST);
-		display_state_counter++;
+		display_state_counter++;	// increment state entry counter
 		display_state_poll(display_state_counter);
 		sensor_sm1.next_state = STATE_SLIDER_POLL_STATE;
 		break;
@@ -61,6 +61,7 @@ int8_t state_event_handler(void){
 		timeout_counter++;
 		Log_string("Counter State: ", STATE_EVENT_HANDLER, LOG_TEST);
 		Log_integer(timeout_counter, EMPTY_NAME, LOG_TEST);
+		// enter if 3 second timer has not finished to check slider state (very glitchy)
 		while(!timeout){
 			poll_value = false;
 			slider_poll_ret = Slider_poll();
@@ -85,7 +86,7 @@ int8_t state_event_handler(void){
         	}
 		}
 		if(timeout){
-			timeout = false;
+			timeout = false;	// reset systick timer bool if set by ISR
 		}
 		if(!poll_value){	// only enter if slider poll is idle
 			// timer transitions
@@ -102,7 +103,6 @@ int8_t state_event_handler(void){
 			} else{	// error
 				LED_off(ALL);
 				Log_string("ERROR: Timer value is out of bounds", SLIDER_POLL, LOG_DEBUG);
-				//PRINTF("%d\r\n", val);
 			}
 		}
 		break;
@@ -149,7 +149,5 @@ void state_transitionState(void){
 	if(sensor_sm1.current_state != sensor_sm1.next_state){
 		sensor_sm1.current_state = sensor_sm1.next_state;
 	}
-//	PRINTF("Current state is %s\r\n", sensor_states[sensor_sm1.current_state]);
-//	PRINTF("Next state is %s\r\n", sensor_states[sensor_sm1.next_state]);
 }
 

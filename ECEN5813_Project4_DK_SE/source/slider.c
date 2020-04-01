@@ -56,7 +56,6 @@ uint16_t Slider_scan(void){
 }
 
 /* set colour of LED based on value of slider left = red, right = blue
- * check for number of entrances based on systick timer interval
  * returns transition for each condition
  */
 int32_t Slider_poll(void){

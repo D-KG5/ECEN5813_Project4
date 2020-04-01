@@ -15,6 +15,8 @@
 
 uint8_t out='A', in;
 
+// initialize SPI loopback
+// from code exercise and the Dean book (git repo link is broken)
 bool SPI_init(void){
 	SIM->SCGC4 |= SIM_SCGC4_SPI1_MASK;// enable clock to SPI1
 	SIM->SCGC5 |= SIM_SCGC5_PORTE_MASK;
@@ -41,6 +43,7 @@ bool SPI_init(void){
 	return true;
 }
 
+// function to send a character
 uint8_t SPI_send(uint8_t d_out){
 	while(!(SPI1->S & SPI_S_SPTEF_MASK))
 		;  //Wait for transmit buffer empty, put data on data buffer
@@ -50,7 +53,7 @@ uint8_t SPI_send(uint8_t d_out){
 	return SPI1->D;
 }
 
-// send ascii character and receive it back (simple loopback because external sensor isn't working)
+// function to send ascii character and receive it back (simple loopback because external sensor isn't working)
 bool SPI_Loopback(void){
 	static bool connected = true;
 	connected = true;
@@ -63,13 +66,14 @@ bool SPI_Loopback(void){
 		LED_on(GREEN); // Green: data matches
 	}
 	out++;
-	if(out > 'z'){
+	if(out > 'z'){	// reset data character
 		out = 'A';
 	}
 	return connected;
 }
 
+// display incoming and outgoing chars
 void display_SPI(int8_t counter){
 	PRINTF("Display State Entry Counter: %d\r\n", counter);
-	PRINTF("In: %c\t Out: %c\r\n", in, out);
+	PRINTF("In: %c\t Out: %c\r\n\n", in, out);
 }

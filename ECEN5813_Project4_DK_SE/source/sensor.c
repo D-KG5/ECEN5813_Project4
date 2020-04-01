@@ -20,12 +20,12 @@ static volatile int16_t acc_Xa = 0, acc_Ya = 0, acc_Za = 0;
 static int32_t avg_counter = 0;
 
 // get i2c and sensor status
-extern bool i2c_poll_status;
+extern bool i2c_status;
 extern bool sensor_poll_status;
 
 // initializes/enables mma8451 sensor. I2C has to already be enabled
 bool Sensor_poll_enable(void){
-	if(i2c_poll_status){
+	if(i2c_status){
 		i2c_write_byte(SLAVE_ADDRESS, REG_CTRL2, 0x40);		// reset device
 		Delay(100);
 		i2c_write_byte(SLAVE_ADDRESS, XYZ_DATA_CFG, 0x00);	// +/- 2g range
@@ -41,7 +41,7 @@ bool Sensor_poll_enable(void){
 
 // disables mma8451 sensor. I2C and sensor has to be already enabled
 bool Sensor_poll_disable(void){
-	if(i2c_poll_status && sensor_poll_status){
+	if(i2c_status && sensor_poll_status){
 		i2c_write_byte(SLAVE_ADDRESS, REG_CTRL1, 0x00);		// set to standby
 		Log_string("Sensor disabled\r\n", SENSOR_DISABLE, LOG_DEBUG);
 		// zero all values and set sensor_status to false
