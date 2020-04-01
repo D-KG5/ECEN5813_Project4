@@ -136,8 +136,8 @@ void dispaly_values(void)
 	acc_Z = temp[2]/4;
 
 
-	PRINTF("X: %d Y: %d Z: %d\r\n",acc_X,acc_Y,acc_Z);//printing acc_meter values
-	PRINTF("Average %d\r\n",((acc_X+acc_Y+acc_Z)/3) );//Taking the avg of last XYZ vaLUES
+	PRINTF("X: %d	   Y: %d	  Z: %d\r\n",acc_X,acc_Y,acc_Z);//printing acc_meter values
+	PRINTF("Average: %d\r\n",((acc_X+acc_Y+acc_Z)/3) );//Taking the avg of last XYZ vaLUES
 	//	// inspired from https://code4coding.com/c-programfind-smallest-of-three-numbers-using-function/
 
 //printing out the low and high value of the XYZ value

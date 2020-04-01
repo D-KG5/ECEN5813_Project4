@@ -77,7 +77,7 @@ extern int state_2(const struct state *s_p)
 
 extern int state_3(const struct state *s_p)
 {
-PRINTF("The number of times it has entered this state machine is %d\r\n",count);
+PRINTF("The number of times it has entered this state machine is %d\r\n\n",count);
 
 
 
@@ -89,19 +89,19 @@ PRINTF("The number of times it has entered this state machine is %d\r\n",count);
 		while(!timeout)
 		{
 
-			int op=Slider_scan();
+			int op=Slider_scan();//scanning the slider value
 			Delay(50000);
 		//	printf("%d\n",op);
-				if(op>690 && op<2700) //if it is right slider touch it will end program!
+				if(op>RIGHT_LOWER && op<RIGHT_HIGHER) //if it is right slider touch it will end program!
 				{
 					count=50;//just for reference 50 is used
 
 				}
-	              else if(op>35 && op<680 ) //if left slider it will go into next SM
-	               {
-
-	            	   count=100;//just for reference 100 is used //100=left and 50=right
-	               }
+//	              else if(op>LEFT_LOWER && op<LEFT_HIGHER ) //if left slider it will go into next SM
+//	               {
+//
+//	            	   count=100;//just for reference 100 is used //100=left and 50=right
+//	               }
 
 		}
 
@@ -112,13 +112,13 @@ PRINTF("The number of times it has entered this state machine is %d\r\n",count);
 
 
 
-		 if(count<6) //if number of time it entered is less than 6 times it should read xyz again
+		 if(count<5) //if number of time it entered is less than 6 times it should read xyz again
 		{
 				count=count+1;
 				state_arr[0].func_p(&state_arr[0]);
 		}
 
-		else if(count==6) //if there is timeout 6
+		else if(count==5) //if there is timeout 6
 			{
 #ifdef TESTING_MODE
 				UCUNIT_TestcaseBegin("Table-driven I2C State Machine Timeout 6 Test\r\n");
