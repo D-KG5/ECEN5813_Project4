@@ -89,12 +89,12 @@ int8_t state_event_handler(void){
 		}
 		if(!poll_value){	// only enter if slider poll is idle
 			// timer transitions
-			if(timeout_counter <= 5){	// timeouts 1 to 5 transition (also include logic for initial slider poll value
+			if(timeout_counter <= 4){	// timeouts 1 to 5 transition (zero-referenced counter)
 				sensor_sm1.next_state = STATE_READ_XYZ_STATE;
-			} else if(timeout_counter >= 6){	// timeout 6 transition and reset entrance counter
+			} else if(timeout_counter >= 5){	// timeout 6 transition and reset entrance counter
 #ifdef TESTING_MODE
 				UCUNIT_TestcaseBegin("State-driven I2C State Machine Timeout 6 Test\r\n");
-				UCUNIT_CheckIsEqual(6, timeout_counter);
+				UCUNIT_CheckIsEqual(5, timeout_counter);
 				UCUNIT_TestcaseEnd();
 #endif
 				timeout_counter = 0;

@@ -50,7 +50,7 @@ uint8_t SPI_send(uint8_t d_out){
 	return SPI1->D;
 }
 
-// send ascii character and recieve it back
+// send ascii character and receive it back (simple loopback because external sensor isn't working)
 bool SPI_Loopback(void){
 	static bool connected = true;
 	connected = true;
