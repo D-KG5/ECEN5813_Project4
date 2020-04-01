@@ -41,15 +41,13 @@ return 0;
 
 extern int state_1(const struct state *s_p)
 {
-	b=read_full_xyz();
+	b=read_full_xyz();//reading the accmeter values
 	Log_string("STATE_READ_XYZ_STATE\r\n", TABLEDRIVEN_STATEMACHINE_INIT, LOG_TEST);
-//	Control_RGB_LEDs(0, 1 , 0);
+
 
 	if(b==1) //checking if read_full_xyz has read values
 	{
-//		LED_on(GREEN);
-//	    Delay(100);
-//	    LED_off(GREEN);
+
 		LED_flash(GREEN,1);
 		state_arr[1].func_p(&state_arr[1]); //Enter second event for displaying these values
 
@@ -105,7 +103,7 @@ PRINTF("The number of times it has entered this state machine is %d\r\n\n",count
 
 		}
 
-		if(timeout)//making IRQ wait stop
+		if(timeout)//making IRQ wait to stop
 		{
 			timeout = false;
 		}
@@ -115,7 +113,7 @@ PRINTF("The number of times it has entered this state machine is %d\r\n\n",count
 		 if(count<4) //if number of time it entered is less than 6 times it should read xyz again
 		{
 				count=count+1;
-				state_arr[0].func_p(&state_arr[0]);
+				state_arr[0].func_p(&state_arr[0]);//repeat the state machine if it entered less than 5 times
 		}
 
 		else if(count==4) //if there is timeout 6
@@ -147,7 +145,7 @@ PRINTF("The number of times it has entered this state machine is %d\r\n\n",count
 	return 0;
 }
 
-extern int state_4(const struct state *s_p)
+extern int state_4(const struct state *s_p)//last even to end the state machine
 {
 	LED_on(RED);
 

@@ -186,13 +186,13 @@ int main(void) {
     	case STATE_MACHINE_TABLE:
     		Log_string("Starting Table\r\n", MAIN, LOG_STATUS);
 
-    		Tabledriven_StateMachine_init();
-    		if(end==1)
+    		Tabledriven_StateMachine_init();//initialize the table driven state machine
+    		if(end==1)//for the right slider touch
     		{
     			return 0;
     		}
 
-    		if(end==2)
+    		if(end==2)//either left slider touch or timeout 6 times
     		{
     			state_machine = STATE_MACHINE_SPI;
     			spi_StateMachine_init();

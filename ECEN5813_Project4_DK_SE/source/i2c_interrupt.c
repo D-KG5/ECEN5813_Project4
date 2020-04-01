@@ -31,7 +31,7 @@ void enbaleinterrupt(void)
     __enable_irq();
 }
 
-void i2c_Transmit(void)
+void i2c_Transmit(void)//transmits the data
 {
 	I2C0->C1 |= I2C_C1_MST_MASK;
 	I2C0->D = ((SLAVE_ADDRESS << 1) | READ);
@@ -41,7 +41,7 @@ void i2c_Transmit(void)
 
 int read_full_xyz()
 {
-	i2c_starti();
+	i2c_starti();//starts the i2c
 	i2c_readsetupi( SLAVE_ADDRESS, REG_XHI,0);
 
 	return 1;
@@ -74,7 +74,7 @@ void i2c_readsetupi(uint8_t dev, uint8_t address,uint8_t isLastRead)
 			ACK;								/*ACK after read	*/
 		}
 
-	enbaleinterrupt();
+	enbaleinterrupt();//start the interrupt
 
 //	data = I2C0->D;
 
