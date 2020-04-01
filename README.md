@@ -32,6 +32,7 @@ PES Project 4 for ECEN 5813. By Dhruva Koley and Sagar Eligar
 	- System.c: source file that containsKL25Z specific system changes to allow uCUnit to work
 	- System.h: header file for System.h
 	- uCUnit.h: header file containing unit test functions
+- logic analyzer.pdf: pdf with I2C waveforms
 
 # Notes
 - The built-in accelerometer is used for this project.
