@@ -4,8 +4,8 @@ PES Project 4 for ECEN 5813. By Dhruva Koley and Sagar Eligar
 # Contents
 - ECEN5813_Project4_DK_SE
   - source
-	- ECEN5813_Project4_DK_SE.c: main source file containing command processor and script parser
-	- global_defines.h: header file that contains user interaction flag to turn it on and off
+	- ECEN5813_Project4_DK_SE.c: main source file containing POST and state machine switching state machine
+	- global_defines.h: header file that contains multiple flags to enable/disable logging, testing and macros
 	- led_control.c: source file to initialize and control the LED
 	- led_control.h: header file for led_control.c
 	- logger.c: source file that contains logging utility functions
@@ -28,6 +28,10 @@ PES Project 4 for ECEN 5813. By Dhruva Koley and Sagar Eligar
 	- statemachine_table.h: header file for statemachine_table.c
 	- timer.c: source file that contains SysTick timer functions
 	- timer.h: header file for timer.c
+- uCUnit
+	- System.c: source file that containsKL25Z specific system changes to allow uCUnit to work
+	- System.h: header file for System.h
+	- uCUnit.h: header file containing unit test functions
 
 # Notes
 - The built-in accelerometer is used for this project.
