@@ -77,7 +77,7 @@ extern int state_2(const struct state *s_p)
 
 extern int state_3(const struct state *s_p)
 {
-PRINTF("The number of times it has entered this state machine is %d\r\n\n",count);
+PRINTF("The number of times it has entered this state machine is %d\r\n\n",count+1);
 
 
 
@@ -112,17 +112,17 @@ PRINTF("The number of times it has entered this state machine is %d\r\n\n",count
 
 
 
-		 if(count<5) //if number of time it entered is less than 6 times it should read xyz again
+		 if(count<4) //if number of time it entered is less than 6 times it should read xyz again
 		{
 				count=count+1;
 				state_arr[0].func_p(&state_arr[0]);
 		}
 
-		else if(count==5) //if there is timeout 6
+		else if(count==4) //if there is timeout 6
 			{
 #ifdef TESTING_MODE
 				UCUNIT_TestcaseBegin("Table-driven I2C State Machine Timeout 6 Test\r\n");
-				UCUNIT_CheckIsEqual(5, count);
+				UCUNIT_CheckIsEqual(4, count);
 				UCUNIT_TestcaseEnd();
 #endif
 
