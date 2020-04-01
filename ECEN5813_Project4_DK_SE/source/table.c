@@ -126,7 +126,7 @@ PRINTF("The number of times it has entered this state machine is %d\r\n\n",count
 				UCUNIT_TestcaseEnd();
 #endif
 
-				Log_string("Timeout five times. Go to other state machine\r\n", TABLEDRIVEN_STATEMACHINE_INIT, LOG_STATUS);
+				Log_string("Timeout six times. Go to other state machine\r\n", TABLEDRIVEN_STATEMACHINE_INIT, LOG_STATUS);
 
 
 				end=2;
